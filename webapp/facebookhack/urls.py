@@ -18,6 +18,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^proxy/', include('proxy.urls')),
+
     url(r'^admin/', admin.site.urls),
+    url(r'^.*$', include('proxy.urls')),
 ]
