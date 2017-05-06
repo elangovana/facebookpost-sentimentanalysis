@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='Empify',
     version='',
-    packages=['web'],
+    packages=['webapp'],
     url='',
     license='',
     author='aparnaelangovan',

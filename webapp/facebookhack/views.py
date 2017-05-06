@@ -22,10 +22,68 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-def transform_reponse(html):
+def transform_reponse(html, content_type="text/html"):
     result = html
-    #TODO: fix path issue
-    result = re.sub(r"\"https://[^\"]*facebook.com", "\"http://localhost:8000/proxy", result)
+
+    if ("text/html" in content_type):
+        # TODO: fix path issue
+        result = re.sub(r"\"https://[^\"]*facebook.com", "\"http://localhost:8000/proxy", result)
+
+        # todo: insert jqeury js
+        script="""
+        <script type="text/javascript" >
+        $(window).bind("load", 
+          function() {
+             var my_func = function () {
+                      var commentor = $(".UFIAddCommentInput");
+
+
+                      var text = commentor.val();
+
+
+                      var data = "api_key=ea875960408bfdb489839a226980c1e6" + "&text=" + text;
+                      var request = $.ajax({
+                          type: "POST",
+                          url: "http://api.datumbox.com/1.0/TwitterSentimentAnalysis.json",
+                          data: data,
+                      });
+
+
+                      // Callback handler that will be called on success
+                      request.done(function (response, textStatus, jqXHR) {
+                          // Log a message to the console
+                          commentor.after("<p>" + response.output.result + "</p>")
+                          console.log(response.output.result);
+
+                      });
+
+                      // Callback handler that will be called on failure
+                      request.fail(function (jqXHR, textStatus, errorThrown) {
+                          // Set error message
+
+                          console.error(
+                              "The following error occurred: " +
+                              textStatus, errorThrown
+                          );
+                      });
+                  }
+             $(".UFIInputContainer").append('<div><a href="#" id="empify">Empify</a></div>');
+             console.log("jshk");
+             console.log($(".UFIInputContainer"))
+             console.log($(".UFIInputContainer").html())
+             console.log("UFIInputContainer");
+             console.log($(".UFIAddComment").html())
+             $("#empify").click(my_func)
+                
+
+        
+          }
+      );
+
+  </script>
+        
+        """
+        result = re.sub(r"</body>", "<script type=\"text/javascript\" src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js\"></script>"+ script +"</body>", result)
     return result
 
 def transform_request(html):
@@ -44,7 +102,7 @@ def index(request):
     fbreponse, cookie_jar = get_fbresponse(fbrelativePath, request)
 
     html = fbreponse.read()
-    transformed_html = transform_reponse(html)
+    transformed_html = transform_reponse(html,fbreponse.info().getheader('Content-Type'))
     #return
     response = HttpResponse(transformed_html)
     set_cookies(cookie_jar, response)
