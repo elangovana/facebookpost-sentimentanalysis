@@ -1,0 +1,48 @@
+<html>
+<head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"/>
+  </script>
+  <script type="text/javascript" >
+    function analyseSentiment(){
+        var text = $("#sentimenttext").val()
+        var result=$("#sentimentresult")
+        result.text("Please wait.. we are analysing....")
+        var data = "api_key=ea875960408bfdb489839a226980c1e6" + "&text="  + text;
+        var request = $.ajax({
+        type: "POST",
+        url: "http://api.datumbox.com/1.0/TwitterSentimentAnalysis.json",
+        data: data,
+        });
+
+
+        // Callback handler that will be called on success
+        request.done(function (response, textStatus, jqXHR){
+            // Log a message to the console
+            console.log(response.output.result);
+            result.text(response.output.result)
+        });
+
+        // Callback handler that will be called on failure
+        request.fail(function (jqXHR, textStatus, errorThrown){
+            // Set error message
+            result.text("Hello world!");
+            console.error(
+                "The following error occurred: "+
+                textStatus, errorThrown
+            );
+        });
+    }
+  </script>
+</head>
+<body>
+
+        <h1>HELLO</h1>
+        <textarea id="sentimenttext" width="50%">
+        </textarea>
+
+         <input type="button" onclick="analyseSentiment()" value="Run datum sentiment snalysis" />
+         <p id="sentimentresult">
+         </p
+  </body>
+
+</html>
