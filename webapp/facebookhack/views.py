@@ -43,11 +43,6 @@ def index(request):
 
     fbreponse, cookie_jar = get_fbresponse(fbrelativePath, request)
 
-
-    #fbreponse cookies
-
-    #pdb.set_trace()
-    #fbhtmlcontent
     html = fbreponse.read()
     transformed_html = transform_reponse(html)
     #return
@@ -82,6 +77,6 @@ def get_fbresponse(fbrelativePath, request):
     if (request.method != 'GET'):
         fbrequest.add_data(transform_request(request.body))
     #pdb.set_trace()
-    # get resposne
+
     fbreponse = opener.open (fbrequest)
     return fbreponse, cookiejar
