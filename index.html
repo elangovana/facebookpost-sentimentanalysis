@@ -1,65 +1,25 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js">
-  </script>
-
-    <script type="text/javascript" >
-      $(
-          function() {
-              alert("sdsa")
-
-             $(".UFICommentAttachmentButtons").append('<div><a href="#" id="empify">Empify</a></div>');
-             $("#empify").click(
-                function () {
-                      var commentor = $(".UFIAddCommentInput");
-
-
-                      var text = commentor.val();
-
-
-                      var data = "api_key=ea875960408bfdb489839a226980c1e6" + "&text=" + text;
-                      var request = $.ajax({
-                          type: "POST",
-                          url: "http://api.datumbox.com/1.0/TwitterSentimentAnalysis.json",
-                          data: data,
-                      });
-
-
-                      // Callback handler that will be called on success
-                      request.done(function (response, textStatus, jqXHR) {
-                          // Log a message to the console
-                          commentor.after("<p>" + response.output.result + "</p>")
-                          console.log(response.output.result);
-
-                      });
-
-                      // Callback handler that will be called on failure
-                      request.fail(function (jqXHR, textStatus, errorThrown) {
-                          // Set error message
-
-                          console.error(
-                              "The following error occurred: " +
-                              textStatus, errorThrown
-                          );
-                      });
-                  }
-
-        )
-          }
-      );
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Dialog - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#dialog" ).dialog();
+  } );
   </script>
 </head>
 <body>
 
+<div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
 
-        <h1>HELLO</h1>
-        <textarea class="UFIAddCommentInput _1os9 _2xww" name="add_comment_text" placeholder="Write a comment..." spellcheck="true">…</textarea>
-        <div class="_fmk UFICommentAttachmentButtons _5op2 _5op2">
-        </div>
 
-     <div class="_fmk UFICommentAttachmentButtons _5op2 _5op2">
-        </div>
-  </body>
-
+</body>
 </html>

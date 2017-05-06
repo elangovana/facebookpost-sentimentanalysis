@@ -31,13 +31,18 @@ def transform_reponse(html, content_type="text/html"):
 
         # todo: insert jqeury js
         script="""
+        <script
+			  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+			  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+			  crossorigin="anonymous"></script>
+			  
         <script type="text/javascript" >
         $(window).bind("load", 
           function() {
              var my_func = function () {
                       var commentor = $(".UFIAddCommentInput");
 
-
+                      var quotes =['JarvisJnr Says: <br> Maybe you want to rephrase that. How about,\"Lets agreeto disagree\"??']
                       var text = commentor.val();
 
 
@@ -48,12 +53,19 @@ def transform_reponse(html, content_type="text/html"):
                           data: data,
                       });
 
-
+                      
                       // Callback handler that will be called on success
                       request.done(function (response, textStatus, jqXHR) {
                           // Log a message to the console
-                          commentor.after("<p>" + response.output.result + "</p>")
+                          var hide_diag=function(){
+                                $("#dialog").hide(30000);
+                            }
                           console.log(response.output.result);
+                          if (response.output.result == 'negative'){                        
+                            commentor.after('<div id="dialog" title="Basic dialog"><p>'+quotes[0]+ '</p></div>');
+                          }
+                          hide_diag();
+                         
 
                       });
 
