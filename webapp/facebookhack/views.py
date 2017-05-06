@@ -42,7 +42,7 @@ def transform_reponse(html, content_type="text/html"):
              var my_func = function () {
                       var commentor = $(".UFIAddCommentInput");
 
-                      var quotes =['JarvisJnr Says: <br> Maybe you want to rephrase that. How about,\"Lets agreeto disagree\"??']
+                      var quotes =['JarvisJnr Says: <br> Maybe you want to rephrase that. How about,\"Lets agree to disagree?\"']
                       var text = commentor.val();
 
 
