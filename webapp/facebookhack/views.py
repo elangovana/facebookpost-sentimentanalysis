@@ -60,20 +60,6 @@ def set_cookies(cookies, response):
     if cookies == '':
         return
 
-    #arrcookies = cookies.split(";")
-    # for unparsed_cookie in arrcookies:
-    #     if (len(unparsed_cookie.split("=")) == 2):
-    #         k = unparsed_cookie.split("=")[0]
-    #         v = unparsed_cookie.split("=")[1]
-    #         if (k == 'domain'):
-    #             #TODO: fix hardcoded domain name
-    #             response.set_cookie("original-domain", v)
-    #             v = "localhost"
-    #         response.set_cookie(k,v)
-    #
-    #     else:
-    #         response.set_cookie(unparsed_cookie)
-    #     pdb.set_trace()
     for item in cookies:
 
         response.set_cookie( item.name, item.value)
