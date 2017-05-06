@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import cookielib
 import logging
 import urllib
 import re
@@ -24,44 +25,77 @@ sys.setdefaultencoding('utf8')
 def transform_reponse(html):
     result = html
     #TODO: fix path issue
-    result = re.sub(r"\"https://[^\"]*facebook.com", "http://localhost:8000/proxy", result)
+    result = re.sub(r"\"https://[^\"]*facebook.com", "\"http://localhost:8000/proxy", result)
     return result
 
 def transform_request(html):
     result = html
     # TODO: fix path issue
-    result = re.sub(r"\"http://localhost:8000/proxy", "https://www.facebook.com",  result)
+    result = re.sub(r"\"http://localhost:8000/proxy", "\"https://www.facebook.com",  result)
     return result
 
 @csrf_exempt
 def index(request):
     # Accept-Language: da, en-gb
     #TODO:fix path issue
-    fbrelativePath = re.sub(r"^/proxy/", "",request.path_info)
+    path_info = request.path_info
+    fbrelativePath = re.sub(r"^/proxy/", "", path_info)
 
-    fbreponse = get_fbresponse(fbrelativePath, request)
+    fbreponse, cookie_jar = get_fbresponse(fbrelativePath, request)
 
 
     #fbreponse cookies
-    cookies = fbreponse.info()['Set-Cookie']
+
+    #pdb.set_trace()
     #fbhtmlcontent
     html = fbreponse.read()
     transformed_html = transform_reponse(html)
     #return
     response = HttpResponse(transformed_html)
-    response.set_cookie( cookies)
+    set_cookies(cookie_jar, response)
     return response
+
+
+def set_cookies(cookies, response):
+    if cookies == '':
+        return
+
+    #arrcookies = cookies.split(";")
+    # for unparsed_cookie in arrcookies:
+    #     if (len(unparsed_cookie.split("=")) == 2):
+    #         k = unparsed_cookie.split("=")[0]
+    #         v = unparsed_cookie.split("=")[1]
+    #         if (k == 'domain'):
+    #             #TODO: fix hardcoded domain name
+    #             response.set_cookie("original-domain", v)
+    #             v = "localhost"
+    #         response.set_cookie(k,v)
+    #
+    #     else:
+    #         response.set_cookie(unparsed_cookie)
+    #     pdb.set_trace()
+    for item in cookies:
+
+        response.set_cookie( item.name, item.value)
+
 
 
 def get_fbresponse(fbrelativePath, request):
     path = 'https://www.facebook.com/' + fbrelativePath
+    cookiejar = cookielib.CookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookiejar))
     fbrequest = urllib2.Request(path)
     fbrequest.add_header('Accept-Language', 'en-gb')
     # add cookies
-    fbrequest.add_header('Cookie', "; ".join('%s=%s' % (k, v) for k, v in request.COOKIES.items()))
+    cookie = "; ".join('%s=%s' % (k, v) for k, v in request.COOKIES.items())
+    #TODO: fix domain in cookie
+    re.sub("domain=[^;]+","",cookie)
+    re.sub("original-domain=", "domain=", cookie)
+    fbrequest.add_header('Cookie', cookie)
+
     if (request.method != 'GET'):
         fbrequest.add_data(transform_request(request.body))
-
+    #pdb.set_trace()
     # get resposne
-    fbreponse = urllib2.urlopen(fbrequest)
-    return fbreponse
+    fbreponse = opener.open (fbrequest)
+    return fbreponse, cookiejar
