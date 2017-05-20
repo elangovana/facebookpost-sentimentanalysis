@@ -64,6 +64,9 @@ def transform_reponse(html, content_type="text/html"):
                           if (response.output.result == 'negative'){                        
                             commentor.after('<div id="dialog" title="Basic dialog"><p>'+quotes[0]+ '</p></div>');
                           }
+                          else{
+                            commentor.after('<div id="dialog" title="Basic dialog"><p>'+'JarvisJnr Says: <br>  That is nice!'+ '</p></div>');
+                          }
                           hide_diag();
                          
 
